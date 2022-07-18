@@ -1,0 +1,208 @@
+> use school
+switched to db school
+
+> db.list.insert({"reg":101,"name":"Arun","mark":[{"m1":30,"m2":30}]})
+WriteResult({ "nInserted" : 1 })
+> db.list.insert({"reg":102,"name":"Arun","mark":[{"m1":30,"m2":45}]})
+WriteResult({ "nInserted" : 1 })
+> db.list.insert({"reg":103,"name":"Binoy","mark":[{"m1":38,"m2":48}]})
+WriteResult({ "nInserted" : 1 })
+> db.list.insert({"reg":104,"name":"Bincy","mark":[{"m1":48,"m2":28}]})
+WriteResult({ "nInserted" : 1 })
+> db.list.insert({"reg":105,"name":"Adharsh","mark":[{"m1":48,"m2":18}]})
+WriteResult({ "nInserted" : 1 })
+
+> db.list.getIndices()
+[ { "v" : 2, "key" : { "_id" : 1 }, "name" : "_id_" } ]
+
+
+	Single Index
+> db.list.createIndex({"reg":1})
+{
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+> db.list.getIndices()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "reg" : 1
+                },
+                "name" : "reg_1"
+        }
+]
+>
+
+	remove the index
+
+> db.list.dropIndex({"reg":1})
+{ "nIndexesWas" : 2, "ok" : 1 }
+> db.list.getIndices()
+[ { "v" : 2, "key" : { "_id" : 1 }, "name" : "_id_" } ]
+
+
+
+
+
+		Compound Index
+
+> db.list.createIndex({reg:1,name:1})
+{
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+> db.list.getIndices()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "reg" : 1,
+                        "name" : 1
+                },
+                "name" : "reg_1_name_1"
+        }
+]
+>
+
+
+
+
+
+		Multikey Index
+
+> db.list.find()
+{ "_id" : ObjectId("62a06ce13509550b400ebc0f"), "reg" : 101, "name" : "Arun", "mark" : [ { "m1" : 30, "m2" : 30 } ] }
+{ "_id" : ObjectId("62a06cee3509550b400ebc10"), "reg" : 102, "name" : "Arun", "mark" : [ { "m1" : 30, "m2" : 45 } ] }
+{ "_id" : ObjectId("62a06d063509550b400ebc11"), "reg" : 103, "name" : "Binoy", "mark" : [ { "m1" : 38, "m2" : 48 } ] }
+{ "_id" : ObjectId("62a06d1b3509550b400ebc12"), "reg" : 104, "name" : "Bincy", "mark" : [ { "m1" : 48, "m2" : 28 } ] }
+{ "_id" : ObjectId("62a06d313509550b400ebc13"), "reg" : 105, "name" : "Adharsh", "mark" : [ { "m1" : 48, "m2" : 18 } ] }
+
+> db.list.createIndex({"mark.m1":1})
+{
+        "numIndexesBefore" : 2,
+        "numIndexesAfter" : 3,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+> db.list.getIndices()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "reg" : 1,
+                        "name" : 1
+                },
+                "name" : "reg_1_name_1"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "mark.m1" : 1
+                },
+                "name" : "mark.m1_1"
+        }
+]
+>
+ db.list.dropIndex("mark.m1_1")
+{ "nIndexesWas" : 3, "ok" : 1 }
+> db.list.getIndices()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "reg" : 1,
+                        "name" : 1
+                },
+                "name" : "reg_1_name_1"
+        }
+]
+
+
+
+
+
+
+		text indexx
+
+
+> db.comments.insert({"name":"binoy","post":"Hi there"})
+WriteResult({ "nInserted" : 1 })
+> db.comments.insert({"name":"arun","post":"Hi there you"})
+WriteResult({ "nInserted" : 1 })
+> db.comments.insert({"name":"bincy","post":"Hi you"})
+WriteResult({ "nInserted" : 1 })
+> db.comments.find()
+{ "_id" : ObjectId("62a0728a3509550b400ebc14"), "name" : "binoy", "post" : "Hi there" }
+{ "_id" : ObjectId("62a072983509550b400ebc15"), "name" : "arun", "post" : "Hi there you" }
+{ "_id" : ObjectId("62a072a43509550b400ebc16"), "name" : "bincy", "post" : "Hi you" }
+> db.comments.createIndex({post:"text"})
+{
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "createdCollectionAutomatically" : false,
+        "ok" : 1
+}
+> db.comments.getIndices()
+[
+        {
+                "v" : 2,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_"
+        },
+        {
+                "v" : 2,
+                "key" : {
+                        "_fts" : "text",
+                        "_ftsx" : 1
+                },
+                "name" : "post_text",
+                "weights" : {
+                        "post" : 1
+                },
+                "default_language" : "english",
+                "language_override" : "language",
+                "textIndexVersion" : 3
+        }
+]
+
+> db.comments.find({$text:{$search: "\"Hi you\""}})
+{ "_id" : ObjectId("62a072a43509550b400ebc16"), "name" : "bincy", "post" : "Hi you" }
+>
+
+
+
